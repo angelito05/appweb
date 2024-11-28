@@ -1,0 +1,103 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Registrar Producto</title>
+    <link href="https://stackpath.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container mt-5">
+        <div class="row justify-content-center">
+            <div class="col-md-6">
+                <div class="card">
+                    <div class="card-header">
+                        <h3 class="text-center">Registrar Producto</h3>
+                    </div>
+                    <div class="card-body">
+                        {% with messages = get_flashed_messages() %}
+                          {% if messages %}
+                            <div class="alert alert-warning" role="alert">
+                              {{ messages[0] }}
+                            </div>
+                          {% endif %}
+                        {% endwith %}
+                        <form action="/save_product" method="post">
+                            <div class="form-group">
+                                <label for="nombre_material">Nombre del Material</label>
+                                <input type="text" class="form-control" id="nombre_material" name="nombre_material" placeholder="Introduce el nombre del material">
+                            </div>
+                            <div class="form-group">
+                                <label for="categoria">Categoría</label>
+                                <input type="text" class="form-control" id="categoria" name="categoria" placeholder="Introduce la categoría">
+                            </div>
+                            <div class="form-group">
+                                <label for="precio">Precio</label>
+                                <input type="number" class="form-control" id="precio" name="precio" placeholder="Introduce el precio">
+                            </div>
+                            <div class="form-group">
+                                <label for="disponibilidad">Disponibilidad</label>
+                                <input type="text" class="form-control" id="disponibilidad" name="disponibilidad" placeholder="Introduce la disponibilidad">
+                            </div>
+                            <div class="form-group">
+                                <label for="marca_producto">Marca del Producto</label>
+                                <input type="text" class="form-control" id="marca_producto" name="marca_producto" placeholder="Introduce la marca del producto">
+                            </div>
+                            <div class="form-group">
+                                <label for="negocio">Negocio</label>
+                                <input type="text" class="form-control" id="negocio" name="negocio" placeholder="Introduce el nombre del negocio">
+                            </div>
+                            <button type="submit" class="btn btn-primary btn-block">Guardar Producto</button>
+                        </form>
+                        <button class="btn btn-secondary btn-block" onclick="loadProducts()">Ver Productos</button>
+                    </div>
+                    <div class="card-footer text-center">
+                        <small><a href="/">Cerrar Sesión</a></small>
+                    </div>
+                </div>
+                <div id="products-section" class="mt-5">
+                    <h3 class="text-center">Productos Registrados</h3>
+                    <table class="table table-striped">
+                        <thead>
+                            <tr>
+                                <th>Nombre del Material</th>
+                                <th>Categoría</th>
+                                <th>Precio</th>
+                                <th>Disponibilidad</th>
+                                <th>Marca</th>
+                            </tr>
+                        </thead>
+                        <tbody id="product-list">
+                        </tbody>
+                    </table>
+                </div>
+            </div>
+        </div>
+    </div>
+
+    <script src="https://code.jquery.com/jquery-3.5.1.min.js"></script>
+    <script src="https://cdn.jsdelivr.net/npm/@popperjs/core@2.5.3/dist/umd/popper.min.js"></script>
+    <script src="https://stackpath.jsdelivr.net/npm/bootstrap/4.5.2/js/bootstrap.min.js"></script>
+    <script>
+        function loadProducts() {
+            fetch("/get_products")
+                .then(response => response.json())
+                .then(data => {
+                    var productList = document.getElementById("product-list");
+                    productList.innerHTML = ''; // Clear the current list
+                    data.forEach(product => {
+                        var row = document.createElement("tr");
+                        row.innerHTML = `
+                            <td>${product.nombre_material}</td>
+                            <td>${product.categoria}</td>
+                            <td>${product.precio}</td>
+                            <td>${product.disponibilidad}</td>
+                            <td>${product.marca_producto}</td>
+                        `;
+                        productList.appendChild(row);
+                    });
+                });
+        }
+    </script>
+</body>
+</html>
